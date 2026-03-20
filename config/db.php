@@ -1,10 +1,10 @@
 <?php
-$host = "localhost";
+$host = "127.0.0.1";  // ⚠️ IMPORTANT CHANGE
 $user = "root";
 $password = "";
 $database = "canteen_db";
 
-$conn = mysqli_connect($host, $user, $password, $database);
+$conn = mysqli_connect($host, $user, $password, $database, 3307);
 
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
