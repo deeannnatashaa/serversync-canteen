@@ -14,7 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     mysqli_stmt_bind_param($stmt, "iii", $item_id, $prepared, $consumed);
     mysqli_stmt_execute($stmt);
 
-<<<<<<< HEAD
     $success = "Waste log saved successfully!";
 }
 
@@ -52,21 +51,3 @@ $items = mysqli_query($conn, "SELECT item_id, name FROM menu WHERE is_available 
     </form>
 </body>
 </html>
-=======
-    echo "<p>Waste log saved successfully.</p>";
-}
-
-$items = mysqli_query($conn, "SELECT item_id, name FROM Menu WHERE is_available = 1");
-?>
-
-<form method="POST">
-    <select name="item_id">
-        <?php while($row = mysqli_fetch_assoc($items)): ?>
-            <option value="<?= $row['item_id'] ?>"><?= $row['name'] ?></option>
-        <?php endwhile; ?>
-    </select>
-    <input type="number" name="prepared_qty" placeholder="Prepared quantity">
-    <input type="number" name="consumed_qty" placeholder="Consumed quantity">
-    <button type="submit">Save Log</button>
-</form>
->>>>>>> 4f8c4e5a745ca9b2bbfce0d69d8626b91ca061cb
