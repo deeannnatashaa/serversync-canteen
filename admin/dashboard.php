@@ -1,28 +1,43 @@
-<?php require_once '../config/db.php'; ?>
+<?php 
+session_start();
+require_once '../config/db.php'; 
+?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard - ServeSync</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; }
-        .navbar { background: #e65c00; color: white; padding: 15px 20px; }
-        .container { padding: 20px; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        th { background: #e65c00; color: white; padding: 12px; text-align: left; }
-        td { padding: 12px; border-bottom: 1px solid #eee; }
+        body { background: #f4f4f4; }
+        th { background-color: #e65c00; color: white; }
         tr:hover { background: #fff8f5; }
-        h2 { color: #e65c00; }
     </style>
 </head>
 <body>
-    <div class="navbar">🍽️ Admin Dashboard</div>
+
+<nav class="navbar navbar-dark" style="background-color: #e65c00;">
     <div class="container">
-        <h2>Today's Orders Summary</h2>
-        <table>
+        <a class="navbar-brand fw-bold">🍽️ ServeSync — Admin</a>
+        <div class="d-flex gap-3">
+            <a href="/serversync-canteen/admin/dashboard.php" class="btn btn-light btn-sm">Dashboard</a>
+            <a href="/serversync-canteen/admin/tokens.php" class="btn btn-light btn-sm">Tokens</a>
+            <a href="/serversync-canteen/admin/waste_log.php" class="btn btn-light btn-sm">Waste Log</a>
+            <a href="/serversync-canteen/admin/waste_report.php" class="btn btn-light btn-sm">Waste Report</a>
+            <a href="/serversync-canteen/logout.php" class="btn btn-dark btn-sm">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h2 style="color: #e65c00;">Today's Orders Summary</h2>
+    <table class="table table-bordered shadow-sm bg-white mt-3">
+        <thead>
             <tr>
                 <th>Item</th>
                 <th>Total Ordered</th>
             </tr>
+        </thead>
+        <tbody>
             <?php
             $sql = "SELECT m.name, SUM(oi.quantity) AS total_ordered
                     FROM Order_Items oi
@@ -38,8 +53,9 @@
                 <td><?= $row['total_ordered'] ?></td>
             </tr>
             <?php endwhile; ?>
-        </table>
-    </div>
+        </tbody>
+    </table>
+</div>
+
 </body>
 </html>
-

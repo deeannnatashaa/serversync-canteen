@@ -2,7 +2,7 @@
 session_start();
 require_once '../config/db.php';
 
-$user_id = 1; // temporary — will come from login later
+$user_id = $_SESSION['user_id'];
 
 // Get next token number
 $token_sql = "SELECT COALESCE(MAX(token_no), 0) + 1 AS next_token FROM Orders WHERE DATE(order_date) = CURDATE()";
@@ -28,26 +28,16 @@ if(isset($_POST['qty'])) {
         }
     }
 }
+
+// Insert token
+$tok_sql = "INSERT INTO Tokens (order_id) VALUES (?)";
+$stmt3 = mysqli_prepare($conn, $tok_sql);
+mysqli_stmt_bind_param($stmt3, "i", $order_id);
+mysqli_stmt_execute($stmt3);
+
+// Save in session and redirect to token page
+$_SESSION['token_no'] = $next_token;
+$_SESSION['order_id'] = $order_id;
+header("Location: token.php");
+exit();
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Order Confirmed</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .box { background: white; padding: 40px; border-radius: 8px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .token { font-size: 72px; font-weight: bold; color: #e65c00; }
-        h2 { color: #333; }
-        p { color: #666; }
-    </style>
-</head>
-<body>
-    <div class="box">
-        <h2>✅ Order Placed!</h2>
-        <p>Your token number is</p>
-        <div class="token"><?= $next_token ?></div>
-        <p>Please collect your order when your number is called.</p>
-        <a href="menu.php">Order More</a>
-    </div>
-</body>
-</html>

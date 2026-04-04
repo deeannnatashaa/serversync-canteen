@@ -1,7 +1,7 @@
 <?php 
+session_start();
 require_once '../config/db.php';
 
-// Handle mark as collected
 if(isset($_POST['collect'])) {
     $order_id = $_POST['order_id'];
     mysqli_query($conn, "UPDATE Tokens SET collected = 'Y' WHERE order_id = $order_id");
@@ -11,30 +11,40 @@ if(isset($_POST['collect'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Token Management</title>
+    <title>Token Management - ServeSync</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; }
-        .navbar { background: #e65c00; color: white; padding: 15px 20px; }
-        .container { padding: 20px; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        th { background: #e65c00; color: white; padding: 12px; text-align: left; }
-        td { padding: 12px; border-bottom: 1px solid #eee; }
-        button { background: #28a745; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
-        .collected { color: green; font-weight: bold; }
-        h2 { color: #e65c00; }
+        body { background: #f4f4f4; }
+        th { background-color: #e65c00; color: white; }
     </style>
 </head>
 <body>
-    <div class="navbar">🍽️ Token Management</div>
+
+<nav class="navbar navbar-dark" style="background-color: #e65c00;">
     <div class="container">
-        <h2>Today's Tokens</h2>
-        <table>
+        <a class="navbar-brand fw-bold">🍽️ ServeSync — Admin</a>
+        <div class="d-flex gap-3">
+            <a href="/serversync-canteen/admin/dashboard.php" class="btn btn-light btn-sm">Dashboard</a>
+            <a href="/serversync-canteen/admin/tokens.php" class="btn btn-light btn-sm">Tokens</a>
+            <a href="/serversync-canteen/admin/waste_log.php" class="btn btn-light btn-sm">Waste Log</a>
+            <a href="/serversync-canteen/admin/waste_report.php" class="btn btn-light btn-sm">Waste Report</a>
+            <a href="/serversync-canteen/logout.php" class="btn btn-dark btn-sm">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h2 style="color: #e65c00;">Today's Tokens</h2>
+    <table class="table table-bordered shadow-sm bg-white mt-3">
+        <thead>
             <tr>
                 <th>Token No</th>
                 <th>Student</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
+        </thead>
+        <tbody>
             <?php
             $sql = "SELECT o.order_id, o.token_no, o.status, u.name 
                     FROM Orders o 
@@ -46,18 +56,20 @@ if(isset($_POST['collect'])) {
             <tr>
                 <td><?= $row['token_no'] ?></td>
                 <td><?= $row['name'] ?></td>
-                <td><?= $row['status'] == 'collected' ? '<span class="collected">✅ Collected</span>' : $row['status'] ?></td>
+                <td><?= $row['status'] == 'collected' ? '<span class="text-success fw-bold">✅ Collected</span>' : ucfirst($row['status']) ?></td>
                 <td>
                     <?php if($row['status'] != 'collected'): ?>
                     <form method="POST">
                         <input type="hidden" name="order_id" value="<?= $row['order_id'] ?>">
-                        <button type="submit" name="collect">Mark Collected</button>
+                        <button type="submit" name="collect" class="btn btn-success btn-sm">Mark Collected</button>
                     </form>
                     <?php endif; ?>
                 </td>
             </tr>
             <?php endwhile; ?>
-        </table>
-    </div>
+        </tbody>
+    </table>
+</div>
+
 </body>
 </html>
